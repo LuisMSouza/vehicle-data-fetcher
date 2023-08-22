@@ -1,9 +1,12 @@
 import PyPDF2
 import re
 import os
-import constants
+import modules.constants as constants
 
-def readFiles() -> dict:
+from modules.getVehicleData import run
+
+
+def readFiles():
     matches = {}
 
     files = os.listdir("tmp")
@@ -18,7 +21,7 @@ def readFiles() -> dict:
             text = page.extract_text()
             plate_search = re.search(plate_regex, text)
             if plate_search:
-                before_plate_text = text[:plate_search.start()]
+                before_plate_text = text[: plate_search.start()]
                 process_search = re.search(process_regex, before_plate_text[::-1])
                 if process_search:
                     process_number = process_search.group()[::-1]
@@ -37,12 +40,20 @@ def readFiles() -> dict:
                         if process_numbers:
                             process_number = process_numbers[-1]
                             plate_parsed = plate_search.group().replace("\n", "")
-                            plate_number = re.search(constants.PLATE_NUMBER_REGEX, plate_parsed)
+                            plate_number = re.search(
+                                constants.PLATE_NUMBER_REGEX, plate_parsed
+                            )
                             matches[f"{process_number}"] = f"{plate_number.group()}"
                             print(matches)
                         else:
-                            print("Número do processo não encontrado na página anterior.")
+                            print(
+                                "Número do processo não encontrado na página anterior."
+                            )
                     else:
-                        print("Sem páginas anteriores para procurar o número de processo.")
+                        print(
+                            "Sem páginas anteriores para procurar o número de processo."
+                        )
 
-readFiles()
+    vehicles_data = run(matches)
+    return vehicles_data
+
