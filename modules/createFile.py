@@ -1,0 +1,19 @@
+import modules.constants as constants
+
+import aspose.pdf as ap
+
+
+def createDoc(data: dict):
+    document = ap.Document()
+    page = document.pages.add()
+
+    for proces, dat in data.items():
+        text_fragment = ap.text.TextFragment(
+            constants.PROCESS_NUMBER.format(proces)
+            + constants.PLATE.format(dat["plate"])
+            + constants.V_DATA.format(dat["data"])
+        )
+
+        page.paragraphs.add(text_fragment)
+
+    document.save("transcript/vehicles.pdf")

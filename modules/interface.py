@@ -1,4 +1,7 @@
 from modules.getFiles import getFiles
+from modules.readFiles import readFiles
+from modules.createFile import createDoc
+
 import customtkinter
 import os
 import modules.constants as constants
@@ -55,17 +58,23 @@ class Application:
 
     def extract_files(self):
         """Extract data from pdf files"""
+        self.main_label.configure(text=constants.EXTRACT_DATA)
         files = os.listdir("tmp")
         if len(files) == 0:
-            self.main_label.configure(
-                text=constants.FILES_NOT_FOUND
-            )
+            self.main_label.configure(text=constants.FILES_NOT_FOUND)
+
+        v_data = readFiles()
+        createDoc(v_data)
+        self.main_label.configure(text=constants.EXTRACT_SUCCESS)
+
     def close(self):
         """Close the app"""
         exit()
 
 
 root = customtkinter.CTk()
+root.title("Vehicle process")
+root.iconbitmap("img/carro.ico")
 root.geometry("500x350")
 Application(root)
 root.mainloop()
