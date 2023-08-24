@@ -1,6 +1,6 @@
-import modules.constants as constants
-
+import constants as constants
 import aspose.pdf as ap
+import os
 
 
 def createDoc(data: dict):
@@ -15,5 +15,8 @@ def createDoc(data: dict):
         )
 
         page.paragraphs.add(text_fragment)
+
+    if not os.path.exists("transcript"):
+        os.mkdir("transcript")
 
     document.save("transcript/vehicles.pdf")
