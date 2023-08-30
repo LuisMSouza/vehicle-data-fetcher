@@ -20,3 +20,20 @@ def createDoc(data: dict):
         os.mkdir("transcript")
 
     document.save("transcript/vehicles.pdf")
+
+def createDocNotaries(data: dict):
+    document = ap.Document()
+    page = document.pages.add()
+
+    for process, dat in data.items():
+        text_fragment = ap.text.TextFragment(
+            constants.PROCESS_NUMBER.format(process)
+            + constants.FIND_AT.format(dat)
+        )
+
+        page.paragraphs.add(text_fragment)
+
+    if not os.path.exists("transcript"):
+        os.mkdir("transcript")
+
+    document.save("transcript/notaries.pdf")
