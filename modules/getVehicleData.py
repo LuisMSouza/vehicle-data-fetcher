@@ -26,7 +26,7 @@ def transform(playwright, plates):
         try:
             time.sleep(1)
             if constants.LIMIT_TEXT in page.content():
-                alternative_page(plates, browser, context)
+                alternative_page(plates, context)
                 break
 
             page.wait_for_url("**/resultado.php**")
