@@ -10,6 +10,9 @@ def transform(playwright, plates):
     browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
     for proc, plate in plates.items():
+        if proc in vehicles_data:
+            continue
+
         vehicle_info = ""
         page = context.new_page()
         page.goto(constants.PLATE_INFO_URL)
@@ -18,7 +21,7 @@ def transform(playwright, plates):
         page.get_by_placeholder("ABC-1234").fill(plate)
         page.get_by_role("link", name="Consultar Placa").click()
 
-        page.wait_for_load_state("networkidle")
+        page.wait_for_load_state("load")
 
         if constants.LIMIT_TEXT in page.content():
             # alternative_page(plates, context)
