@@ -1,11 +1,5 @@
-from playwright.sync_api import (
-    sync_playwright,
-    Browser,
-    BrowserContext,
-)
+from playwright.sync_api import sync_playwright
 import modules.constants as constants
-import time
-from modules.createFile import createDoc
 
 vehicles_data = {}
 
@@ -23,16 +17,14 @@ def transform(playwright, plates):
         page.get_by_placeholder("ABC-1234").click()
         page.get_by_placeholder("ABC-1234").fill(plate)
         page.get_by_role("link", name="Consultar Placa").click()
-        try:
-            time.sleep(1)
-            if constants.LIMIT_TEXT in page.content():
-                alternative_page(plates, context)
-                break
 
-            page.wait_for_url("**/resultado.php**")
-        except Exception as err:
-            print(err)
-            continue
+        page.wait_for_load_state("networkidle")
+
+        if constants.LIMIT_TEXT in page.content():
+            # alternative_page(plates, context)
+            break
+
+        page.wait_for_url("**/resultado.php**")
 
         td_elements = page.query_selector_all("td")
 
