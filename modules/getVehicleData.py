@@ -23,11 +23,14 @@ def transform(playwright, plates):
         page.get_by_placeholder("ABC-1234").click()
         page.get_by_placeholder("ABC-1234").fill(plate)
         page.get_by_role("link", name="Consultar Placa").click()
+
         try:
-            time.sleep(1)
+            time.sleep(2)
             if constants.LIMIT_TEXT in page.content():
-                alternative_page(plates, context)
+                #alternative_page(plates, context)
                 break
+
+            page.wait_for_load_state("load")
 
             page.wait_for_url("**/resultado.php**")
         except Exception as err:
