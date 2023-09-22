@@ -82,7 +82,7 @@ class Application:
     def extract_notaries(self):
         """Extrair dados de cartórios"""
         self.main_label.configure(text=constants.EXTRACT_NOTARIES_DATA)
-        
+
         if not os.path.exists("tmp"):
             self.main_label.configure(text=constants.FILES_NOT_FOUND)
             return
@@ -111,7 +111,7 @@ class Application:
         if len(self.notaries_data) == 0:
             self.main_label.configure(text=constants.NO_NOTARIES_DATA)
             return
-        
+
         createDocNotaries(self.notaries_data)
         self.main_label.configure(text=constants.PDF_REGISTRY_SUCCESS)
 

@@ -1,11 +1,6 @@
-from playwright.sync_api import (
-    sync_playwright,
-    Browser,
-    BrowserContext,
-)
+from playwright.sync_api import sync_playwright
 import modules.constants as constants
 import time
-from modules.createFile import createDoc
 
 vehicles_data = {}
 
@@ -16,6 +11,9 @@ def transform(playwright, plates):
     browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
     for proc, plate in plates.items():
+        if proc in vehicles_data:
+            continue
+
         vehicle_info = ""
         page = context.new_page()
         page.goto(constants.PLATE_INFO_URL)
