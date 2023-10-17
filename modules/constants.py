@@ -40,4 +40,7 @@ NOTARIES_KEYWORDS = [
     "registro de imóveis de belo horizonte",
     "registro de imoveis de belo horizonte",
     "registro de móvel de belo horizonte",
+    "belo horizonte cartório",
+    "ofício do registro de imóveis da comarca de belo horizonte",
+    "tabelionato de notas de belo horizonte"
 ]
