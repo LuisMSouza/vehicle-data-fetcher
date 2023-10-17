@@ -6,8 +6,8 @@ import modules.constants as constants
 from modules.getVehicleData import run
 
 
-def readFiles():
-    matches = {}
+def readFiles(app):
+    app.plates = {}
 
     files = os.listdir("tmp")
     plate_regex = constants.PLATE_REGEX
@@ -27,8 +27,8 @@ def readFiles():
                     process_number = process_search.group()[::-1]
                     plate_parsed = plate_search.group().replace("\n", "")
                     plate_number = re.search(constants.PLATE_NUMBER_REGEX, plate_parsed)
-                    matches[f"{process_number}"] = f"{plate_number.group()}"
-                    print(matches)
+                    app.plates[f"{process_number}"] = f"{plate_number.group()}"
+                    print(app.plates)
                 else:
                     previous_page_text = None
                     if i > 0:
@@ -43,8 +43,8 @@ def readFiles():
                             plate_number = re.search(
                                 constants.PLATE_NUMBER_REGEX, plate_parsed
                             )
-                            matches[f"{process_number}"] = f"{plate_number.group()}"
-                            print(matches)
+                            app.plates[f"{process_number}"] = f"{plate_number.group()}"
+                            print(app.plates)
                         else:
                             print(
                                 "Número do processo não encontrado na página anterior."
@@ -54,6 +54,5 @@ def readFiles():
                             "Sem páginas anteriores para procurar o número de processo."
                         )
 
-    vehicles_data = run(matches)
-    return vehicles_data
-
+    run(app, app.plates)
+    return

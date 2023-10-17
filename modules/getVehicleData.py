@@ -1,17 +1,12 @@
 from playwright.sync_api import sync_playwright
 import modules.constants as constants
-import time
-
-vehicles_data = {}
 
 
-def transform(playwright, plates):
-    global vehicles_data
-
+def transform(app, playwright, plates):
     browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
     for proc, plate in plates.items():
-        if proc in vehicles_data:
+        if proc in app.vehicles_data:
             continue
 
         vehicle_info = ""
@@ -23,14 +18,14 @@ def transform(playwright, plates):
         page.get_by_role("link", name="Consultar Placa").click()
 
         try:
-            time.sleep(2)
+            page.wait_for_selector(f"text={constants.LIMIT_TEXT}", timeout=10000)
             if constants.LIMIT_TEXT in page.content():
-                #alternative_page(plates, context)
+                app.show_secondary_window(
+                    text_message=constants.CONSULT_LIMIT, button="continue"
+                )
                 break
 
-            page.wait_for_load_state("load")
-
-            page.wait_for_url("**/resultado.php**")
+            page.wait_for_selector("text=Marca/Modelo", timeout=30000)
         except Exception as err:
             print(err)
             continue
@@ -43,46 +38,46 @@ def transform(playwright, plates):
 
         page.close()
 
-        vehicles_data[proc] = {"plate": plate, "data": vehicle_info}
+        app.vehicles_data[proc] = {"plate": plate, "data": vehicle_info}
 
     context.close()
     browser.close()
 
 
-def alternative_page(plates, context):
-    global vehicles_data
+# def alternative_page(plates, context):
+#     global vehicles_data
 
-    for proc, plate in plates.items():
-        if proc in vehicles_data:
-            continue
+#     for proc, plate in plates.items():
+#         if proc in vehicles_data:
+#             continue
 
-        page = context.new_page()
-        page.goto(constants.PLATE_INFO_ALTERNATIVE_URL)
-        page.get_by_placeholder("Placa: AAA-0000").click()
-        page.get_by_placeholder("Placa: AAA-0000").fill(plate)
-        page.get_by_role("button", name="L").click()
+#         page = context.new_page()
+#         page.goto(constants.PLATE_INFO_ALTERNATIVE_URL)
+#         page.get_by_placeholder("Placa: AAA-0000").click()
+#         page.get_by_placeholder("Placa: AAA-0000").fill(plate)
+#         page.get_by_role("button", name="L").click()
 
-        page.wait_for_selector('//*[@id="resultado"]', state="attached")
+#         page.wait_for_selector('//*[@id="resultado"]', state="attached")
 
-        model = page.query_selector("span.dados")
-        year_model = page.query_selector("span.dados.texto")
-        locate = page.query_selector("span.dados.localidade")
+#         model = page.query_selector("span.dados")
+#         year_model = page.query_selector("span.dados.texto")
+#         locate = page.query_selector("span.dados.localidade")
 
-        text_model = "Modelo: " + model.inner_text()
-        text_year_model = "Cor\Ano: " + year_model.inner_text()
-        text_locate = "Localidade: " + locate.inner_text()
+#         text_model = "Modelo: " + model.inner_text()
+#         text_year_model = "Cor\Ano: " + year_model.inner_text()
+#         text_locate = "Localidade: " + locate.inner_text()
 
-        vehicle_info = text_model + "\n" + text_year_model + "\n" + text_locate + "\n"
+#         vehicle_info = text_model + "\n" + text_year_model + "\n" + text_locate + "\n"
 
-        vehicles_data[proc] = {"plate": plate, "data": vehicle_info}
+#         vehicles_data[proc] = {"plate": plate, "data": vehicle_info}
 
-        page.close()
+#         page.close()
 
 
-def run(plates):
+def run(app, plates):
     global vehicles_data
 
     with sync_playwright() as playwright:
-        transform(playwright, plates)
+        transform(app, playwright, plates)
 
-    return vehicles_data
+    return

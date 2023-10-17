@@ -2,6 +2,7 @@ from modules.getFiles import getFiles
 from modules.readFiles import readFiles
 from modules.createFile import createDoc, createDocNotaries
 from modules.readNotaries import findNotaries
+from modules.getVehicleData import run
 
 import customtkinter
 import os
@@ -13,6 +14,8 @@ class Application:
         self.frame = customtkinter.CTkFrame(master)
         self.vehicles_data = {}
         self.notaries_data = {}
+        self.plates = {}
+        self.secondary_window = None
         self.frame.pack(pady=5, padx=60, fill="both", expand=True)
         self.appearance = customtkinter.set_appearance_mode("dark")
         self.colortheme = customtkinter.set_default_color_theme("dark-blue")
@@ -135,8 +138,52 @@ class Application:
         if len(files) == 0:
             self.main_label.configure(text=constants.FILES_NOT_FOUND)
 
-        self.vehicles_data = readFiles()
+        readFiles(self)
         self.main_label.configure(text=constants.EXTRACT_VEHICLES_SUCCESS)
+
+    def continue_vehicle_consulting(self):
+        run(self, self.plates)
+        return self.secondary_window.destroy()
+
+    def show_secondary_window(self, text_message: str, button: str = None):
+        button_new_window = None
+        self.secondary_window = customtkinter.CTkToplevel(self.frame)
+        self.secondary_window.title("Aviso!")
+        self.secondary_window.iconbitmap(constants.APP_ICON_WARN_PATH)
+
+        label = customtkinter.CTkLabel(
+            master=self.secondary_window,
+            text=text_message,
+            width=280,
+            height=80,
+            font=("Poppins", 12),
+            fg_color="#1e2227",
+            corner_radius=5,
+            justify="center",
+        )
+        label.pack(pady=10)
+
+        if button.lower() == "close":
+            button_new_window = customtkinter.CTkButton(
+                master=self.secondary_window,
+                text="FECHAR",
+                command=self.secondary_window.destroy,
+                fg_color="#2BB339",
+                hover_color="#1A7623",
+                width=280,
+            )
+        elif button.lower() == "continue":
+            button_new_window = customtkinter.CTkButton(
+                master=self.secondary_window,
+                text="CONTINUAR",
+                command=self.continue_vehicle_consulting,
+                fg_color="#2BB339",
+                hover_color="#1A7623",
+                width=280,
+            )
+
+        if button:
+            button_new_window.pack(pady=10)
 
 
 root = customtkinter.CTk()
