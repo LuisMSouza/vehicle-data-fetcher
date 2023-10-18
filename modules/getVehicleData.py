@@ -35,7 +35,7 @@ def transform(app, playwright, plates):
             td_content = td_element.text_content()
             vehicle_info += td_content + "\n"
 
-        app.veichles_data[proc] = {"plate": plate, "data": vehicle_info}
+        app.vehicles_data[proc] = {"plate": plate, "data": vehicle_info}
 
         page.close()
 
