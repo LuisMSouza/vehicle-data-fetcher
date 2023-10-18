@@ -28,7 +28,6 @@ def transform(app, playwright, plates):
             page.wait_for_selector("text=Marca/Modelo", timeout=30000)
         except Exception as err:
             print(err)
-            continue
 
         td_elements = page.query_selector_all("td")
 
@@ -36,9 +35,10 @@ def transform(app, playwright, plates):
             td_content = td_element.text_content()
             vehicle_info += td_content + "\n"
 
+        app.veichles_data[proc] = {"plate": plate, "data": vehicle_info}
+
         page.close()
 
-        app.vehicles_data[proc] = {"plate": plate, "data": vehicle_info}
 
     context.close()
     browser.close()
@@ -75,8 +75,6 @@ def transform(app, playwright, plates):
 
 
 def run(app, plates):
-    global vehicles_data
-
     with sync_playwright() as playwright:
         transform(app, playwright, plates)
 
