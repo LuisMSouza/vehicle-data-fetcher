@@ -6,7 +6,7 @@ def transform(app, playwright, plates):
     browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
     for proc, plate in plates.items():
-        if proc in app.vehicles_data:
+        if any(veh_data["plate"] == plate for veh_data in app.vehicles_data.values()):
             continue
 
         vehicle_info = ""
