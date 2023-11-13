@@ -1,5 +1,5 @@
 WEBSITE_URL = "https://diario.jt.jus.br/cadernos/dejt.html"
-PLATE_INFO_URL = "https://buscaplacas.com.br/?ref=ericbing"
+PLATE_INFO_URL = "https://consultaplacas.com.br/"
 PLATE_INFO_ALTERNATIVE_URL = "https://www.qualveiculo.net/"
 APP_TITLE = "Judiciary PDF Extractor"
 APP_DIMENSION = "500x350"

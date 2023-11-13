@@ -9,69 +9,44 @@ def transform(app, playwright, plates):
         if any(veh_data["plate"] == plate for veh_data in app.vehicles_data.values()):
             continue
 
+        plate = plate.replace("-", "")
         vehicle_info = ""
         page = context.new_page()
         page.goto(constants.PLATE_INFO_URL)
         page.wait_for_load_state()
         page.get_by_placeholder("ABC-1234").click()
         page.get_by_placeholder("ABC-1234").fill(plate)
-        page.get_by_role("link", name="Consultar Placa").click()
+        page.get_by_role("button", name="BUSCAR DADOS DO VEÍCULO GRÁTIS").click()
 
         try:
-            page.wait_for_selector(f"text={constants.LIMIT_TEXT}", timeout=10000)
-            if constants.LIMIT_TEXT in page.content():
-                app.show_secondary_window(
-                    text_message=constants.CONSULT_LIMIT, button="continue"
-                )
-                break
+            # page.wait_for_selector(f"text={constants.LIMIT_TEXT}", timeout=10000)
+            # if constants.LIMIT_TEXT in page.content():
+            #     app.show_secondary_window(
+            #         text_message=constants.CONSULT_LIMIT, button="continue"
+            #     )
+            #     break
 
-            page.wait_for_selector("text=Marca/Modelo", timeout=30000)
+            page.wait_for_selector(
+                "text=Essas informações são de caráter meramente informativo",
+                timeout=30000,
+            )
         except Exception as err:
             print(err)
 
-        td_elements = page.query_selector_all("td")
+        mark = "Marca: " + page.query_selector_all(".h5.marca")[0].inner_text()
+        model = "Modelo: " + page.query_selector_all(".h5.modelo")[0].inner_text()
+        uf_plate = "UF: " + page.query_selector_all(".h5.uf_placa")[0].inner_text()
+        year_made = "Ano fabricação: "+ page.query_selector_all(".h5.m-0.ano_fabricacao")[0].inner_text()
+        year_model = "Ano modelo: "+ page.query_selector_all(".h5.m-0.ano_modelo")[0].inner_text()
 
-        for td_element in td_elements:
-            td_content = td_element.text_content()
-            vehicle_info += td_content + "\n"
+        vehicle_info += mark + "\n" + model + "\n" + uf_plate + "\n" + year_made + "\n" + year_model + "\n"
 
         app.vehicles_data[proc] = {"plate": plate, "data": vehicle_info}
 
         page.close()
 
-
     context.close()
     browser.close()
-
-
-# def alternative_page(plates, context):
-#     global vehicles_data
-
-#     for proc, plate in plates.items():
-#         if proc in vehicles_data:
-#             continue
-
-#         page = context.new_page()
-#         page.goto(constants.PLATE_INFO_ALTERNATIVE_URL)
-#         page.get_by_placeholder("Placa: AAA-0000").click()
-#         page.get_by_placeholder("Placa: AAA-0000").fill(plate)
-#         page.get_by_role("button", name="L").click()
-
-#         page.wait_for_selector('//*[@id="resultado"]', state="attached")
-
-#         model = page.query_selector("span.dados")
-#         year_model = page.query_selector("span.dados.texto")
-#         locate = page.query_selector("span.dados.localidade")
-
-#         text_model = "Modelo: " + model.inner_text()
-#         text_year_model = "Cor\Ano: " + year_model.inner_text()
-#         text_locate = "Localidade: " + locate.inner_text()
-
-#         vehicle_info = text_model + "\n" + text_year_model + "\n" + text_locate + "\n"
-
-#         vehicles_data[proc] = {"plate": plate, "data": vehicle_info}
-
-#         page.close()
 
 
 def run(app, plates):
