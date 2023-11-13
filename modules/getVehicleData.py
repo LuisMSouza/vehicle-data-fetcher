@@ -32,6 +32,8 @@ def transform(app, playwright, plates):
             )
         except Exception as err:
             print(err)
+            page.close()
+            continue
 
         mark = "Marca: " + page.query_selector_all(".h5.marca")[0].inner_text()
         model = "Modelo: " + page.query_selector_all(".h5.modelo")[0].inner_text()

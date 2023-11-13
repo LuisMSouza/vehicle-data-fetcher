@@ -10,17 +10,10 @@ def createDoc(data: dict):
 
     for proces, dat in data.items():
         data_text = dat["data"]
-        vehicle_data_text = re.search(
-            r"Marca/Modelo\n(.+?)\nAno do modelo\n(\d+)", data_text, re.S
-        )
         text_fragment = ap.text.TextFragment(
             constants.PROCESS_NUMBER.format(proces)
             + constants.PLATE.format(dat["plate"])
-            + constants.V_DATA.format(
-                vehicle_data_text.group(1)
-                + "\nANO MODELO\n"
-                + vehicle_data_text.group(2)
-            )
+            + constants.V_DATA.format(data_text)
         )
 
         text_fragment.text_state.font = ap.text.FontRepository.find_font("Arial")
