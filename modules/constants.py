@@ -1,5 +1,5 @@
 WEBSITE_URL = "https://diario.jt.jus.br/cadernos/dejt.html"
-PLATE_INFO_URL = "https://consultaplacas.com.br/"
+PLATE_INFO_URL = "https://api.brabocar.com.br/api/Vehicle/{plate}"
 PLATE_INFO_ALTERNATIVE_URL = "https://www.qualveiculo.net/"
 APP_TITLE = "Judiciary PDF Extractor"
 APP_DIMENSION = "500x350"
@@ -42,5 +42,19 @@ NOTARIES_KEYWORDS = [
     "registro de móvel de belo horizonte",
     "belo horizonte cartório",
     "ofício do registro de imóveis da comarca de belo horizonte",
-    "tabelionato de notas de belo horizonte"
+    "tabelionato de notas de belo horizonte",
 ]
+PAGE_HEADERS = {
+  'authority': 'api.brabocar.com.br',
+  'accept-language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+  'content-type': 'application/json',
+  'origin': 'https://brabocar.com.br',
+  'referer': 'https://brabocar.com.br/',
+  'sec-ch-ua': 'Not_A',
+  'sec-ch-ua-mobile': '?0',
+  'sec-ch-ua-platform': 'Windows',
+  'sec-fetch-dest': 'empty',
+  'sec-fetch-mode': 'cors',
+  'sec-fetch-site': 'same-site'
+}
+MAX_WORKERS=10
