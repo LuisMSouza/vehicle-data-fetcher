@@ -12,6 +12,8 @@ def transform(app, plates):
 
         time.sleep(2)
 
+        plate = plate.replace("-", "")
+
         vehicle_info = ""
         url = constants.PLATE_INFO_URL.format(plate=plate)
         response = requests.request("GET", url, headers=constants.PAGE_HEADERS, data={})
